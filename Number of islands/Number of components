@@ -1,0 +1,69 @@
+//using DFS
+
+vector<int> visited;
+    void dfs(int node,vector<int> &visited, vector<vector<int>> &isConnected){
+        visited[node+1] = 1;
+        
+        for(int i = 0;i < isConnected[node].size();i++){
+            
+            if(!visited[i+1] && isConnected[node][i] == 1){
+                dfs(i,visited,isConnected);//     ismey i isley kyoki 2d may next vector toh 0 sey start hoga
+            }
+                
+        }
+    }
+    
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int n = isConnected.size();
+        // vector<int> visited(n+1,0);
+        visited.resize(n+1,0);
+        int count = 0;// count the numbers of Provinces
+        for(int i = 0;i < n;i++){
+            if(!visited[i+1]){
+                count++;
+                dfs(i,visited,isConnected);
+            }
+        }
+        
+        return count;
+        
+    }
+    
+    // using bfs
+    
+       int n,m,ct;
+    void bfs(int src,vector<bool>&vis,vector<int> g[]){
+        vis[src] = true;
+        queue<int> q;
+        q.push(src);
+        while(!q.empty()){
+            int top = q.front();
+            q.pop();
+            for(auto &child: g[top]){
+                if(!vis[child]){
+                    vis[child] = true;
+                    q.push(child);
+                }
+            }
+        }
+    }
+public:
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        n = isConnected.size(), m = isConnected[0].size(), ct = 0;
+        vector<bool> vis(n+1,false);
+        vector<int> g[n+1];
+        for(int i=0; i<n; ++i){
+            for(int j=0; j<m; ++j){
+                if(i==j) continue;
+                if(isConnected[i][j])
+                    g[i+1].push_back(j+1);
+            }
+        }
+        for(int i=1; i<=n; ++i){
+            if(!vis[i]){
+                bfs(i,vis,g);
+                ct++;
+            }
+        }
+        return ct;
+    }
